@@ -44,15 +44,27 @@ public class Process {
     
     //helper methods
     public void markReady() {state= State.READY;}
-    public void markRunning(int clk) {state=State.RUNNING; if (start<0) start=clk;}
+    public void markRunning(int clk) {
+        state = State.RUNNING;
+        if (start < 0) {
+            start = clk;  
+        }
+    }
+
     public void cpuTick() {if(remainingTime>0)remainingTime--;}
     boolean isDone() {return remainingTime == 0;}
     void markFinished(int clk) {state=State.TERMINATED; finish =clk; remainingTime=0;}
 
     // Method to calculate waiting time
     public int calculateWaitingTime() {
-       return start-arrivalTime;
+       if (start<0)
+       {
+    	   return 0;
+       }
+       
+       return start - arrivalTime;
     }
+
    
 
     // Method to calculate turnaround time
