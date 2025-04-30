@@ -152,7 +152,21 @@ public class Scheduler {
 	    }
 	    
 	}
-	    
+
+	public void runPSJF()
+	{
+		//sort by arrival time
+		 processList.sort(Comparator.comparingInt(Process::getArrival));
+		 
+		 //min-heap (remainingTime ascending)
+		 PriorityQueue<Process> ready = new PriorityQueue<>(
+			        Comparator.comparingInt(Process::getRemaining)
+			    );
+		 
+		 //clock and tracking
+		 int currentTime = 0, next = 0, finished = 0, n = processList.size();
+	}
+	
 	public void displayResults(String title)
 	{
 		System.out.println("\n=== "+ title+" ===");
