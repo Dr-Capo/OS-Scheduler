@@ -18,6 +18,7 @@ public class Process {
     private final int burstTime;
     private int remainingTime;
     private int priority;
+    private int waitingTime;
     
     private int start=-1;
     private int finish=-1;
@@ -33,6 +34,11 @@ public class Process {
         
     }
     
+    public void setWaitingTime(int wt)
+    {
+    	this.waitingTime=wt;
+    }
+    
     //getters
     public int getPid() {return pid;}
     public String getName() {return name;}
@@ -41,7 +47,10 @@ public class Process {
     public int getRemaining()   { return remainingTime; }
     public int getPriority()    { return priority; }
     public State getState()     { return state; }
-    
+    public int getWaitingTime() {return waitingTime;}
+    public int getTurnAroundTime() {return finish - arrivalTime;}
+     
+   
     //helper methods
     public void markReady() {state= State.READY;}
     public void markRunning(int clk) {
@@ -56,32 +65,24 @@ public class Process {
     	remainingTime=Math.max(0, remainingTime-q);
     }
     boolean isDone() {return remainingTime == 0;}
-    void markFinished(int clk) {state=State.TERMINATED; finish =clk; remainingTime=0;}
+    
+    void markFinished(int clk) {
+    	state=State.TERMINATED; 
+    	finish =clk; 
+    	remainingTime=0;
+        waitingTime= getTurnAroundTime()-burstTime;
+    	
+    	}
 
-    // Method to calculate waiting time
-    public int calculateWaitingTime() {
-       if (start<0)
-       {
-    	   return 0;
-       }
-       
-       return start - arrivalTime;
-    }
-
-   
-
-    // Method to calculate turnaround time
-    public int calculateTurnAroundTime() {
-       return finish - arrivalTime;
-    }
+  
     
     @Override
     public String toString() {
         return String.format(
             "%-3s %s arr=%2d burst=%2d rem=%2d pr=%2d wait=%2d ta=%2d",
             name, state, arrivalTime, burstTime, remainingTime, priority,
-            (start < 0 ? -1 : calculateWaitingTime()), 
-            (finish < 0 ? -1 : calculateTurnAroundTime())
+            (start < 0 ? -1 : getWaitingTime()), 
+            (finish < 0 ? -1 : getTurnAroundTime())
         );
     }
     

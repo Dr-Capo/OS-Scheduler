@@ -38,10 +38,6 @@ public class Scheduler {
 		  
 		  process.markRunning(currentTime);//transition to running state
 		  
-		  process.calculateWaitingTime(); // calculate waiting time for process
-		  
-		  process.calculateTurnAroundTime(); // calculate Turnaround Time for process
-		  
 		  //update current time after process finish
 		  currentTime+=process.getBurst();
 		  process.markFinished(currentTime); // mark process as finished
@@ -62,19 +58,23 @@ public class Scheduler {
 		
 		while (!ready.isEmpty() || next <processList.size()) {
 			
-		//enqueue all jobs that have arrived by current time
-		while(next<processList.size() && processList.get(next).getArrival()<=currentTime)
-		{
-			Process p= processList.get(next++);
-			p.markReady();
-			ready.add(p);
-		}
+			//enqueue all jobs that have arrived by current time
+		     while(next<processList.size() &&
+					processList.get(next).getArrival()<=currentTime)
+			 {
+				    Process p= processList.get(next++);
+					p.markReady();
+					ready.add(p);
+			 }
+			
 		
 		//if nothing ready go to next arrival
 		if (ready.isEmpty())
 		{
-			currentTime= processList.get(next).getArrival();
-			 continue;
+			    ready.add(processList.get(next));
+			    currentTime = processList.get(next).getArrival();
+			    next++;
+			    continue;
 		}
 		
 		//run one quantum
@@ -85,9 +85,17 @@ public class Scheduler {
 		p.cpuTick(slice);//burn cpu
 		currentTime+=slice; 
 		
+		while (next < processList.size()
+			       && processList.get(next).getArrival() <= currentTime) {
+			    Process nx = processList.get(next++);
+			    nx.markReady();
+			    ready.add(nx);
+			}
+		
 		if(p.getRemaining()==0)
 		{
 			p.markFinished(currentTime); //process done
+			p.setWaitingTime(p.getTurnAroundTime() - p.getBurst());
 		}
 		
 		else
