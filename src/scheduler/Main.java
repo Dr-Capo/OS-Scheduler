@@ -42,5 +42,14 @@ public class Main {
        rr.runRoundRobin(2); // time slice=2
        rr.displayResults("Round-Robin q=2");
        
+       
+       //SJF Scheduling Demo
+       Scheduler sjf = new Scheduler();
+       sjf.addProcess(new Process(1, 0, 5, 1));
+       sjf.addProcess(new Process(2, 1, 3, 2));
+       sjf.addProcess(new Process(3, 2, 8, 1));
+       sjf.addProcess(new Process(4, 3, 6, 3));
+       sjf.runSJF();                     
+       sjf.displayResults("SJF");      
     }
 }

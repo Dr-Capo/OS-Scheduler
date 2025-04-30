@@ -6,6 +6,7 @@ public class Scheduler {
 	
 	
 	private final List <Process> processList;
+	private int currentTime;
 	
 	public Scheduler() {
 		processList = new ArrayList<>();
@@ -25,7 +26,8 @@ public class Scheduler {
 		//sort proceses by arrival time
 		
 	  Collections.sort(processList, Comparator.comparingInt(Process::getArrival));
-	  int currentTime=0;
+	  this.currentTime = 0;
+
 	   
 	  for(Process process:processList)
 	  {
@@ -49,10 +51,10 @@ public class Scheduler {
 	public void runRoundRobin(int q)
 	{
 		processList.sort(Comparator.comparingInt(Process::getArrival));
-		
+		this.currentTime = 0;
+
 		Queue<Process> ready = new ArrayDeque<>();
 		
-		int currentTime=0;
 		
 		int next=0;
 		
@@ -105,9 +107,52 @@ public class Scheduler {
 		
 	 }
 		
+
+		
+		
+		
+		
 		
 }
 	
+	public void runSJF() {
+	    // sort by arrival
+	    processList.sort(Comparator.comparingInt(Process::getArrival));
+	    this.currentTime = 0;
+
+	    
+	    //track which jobs have been started
+	    Set<Process> done = new HashSet<>();
+	    
+	    while (done.size() < processList.size()) {
+	    // find all arrived but not-done processes
+	    	Process nextJob = processList.stream()
+	                .filter(p -> !done.contains(p) && p.getArrival() <= currentTime)
+	                .min(Comparator.comparingInt(Process::getBurst))
+	                .orElse(null);
+	    	
+	    	if (nextJob==null)
+	    	{
+	    		//no job read so advance to next arrival
+	    		  int nextArr = processList.stream()
+	    	                .filter(p -> !done.contains(p))
+	    	                .mapToInt(Process::getArrival)
+	    	                .min().getAsInt();
+	    	            currentTime = nextArr;
+	    	            continue;
+	    	}
+	    	
+	    	//run
+	    	nextJob.markReady();
+	        nextJob.markRunning(currentTime);
+	        currentTime += nextJob.getBurst();
+	        nextJob.markFinished(currentTime);
+	        done.add(nextJob);
+
+	    }
+	    
+	}
+	    
 	public void displayResults(String title)
 	{
 		System.out.println("\n=== "+ title+" ===");
@@ -116,5 +161,5 @@ public class Scheduler {
 		}
 	}
 	
-
+	
 }
