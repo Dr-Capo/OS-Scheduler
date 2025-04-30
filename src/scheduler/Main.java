@@ -34,31 +34,31 @@ public class Main {
     	
     	//FCFS
     	Scheduler fcfs = new Scheduler();
-        original.forEach(fcfs::addProcess);
-        fcfs.runFCFS();
+    	original.forEach(p -> fcfs.addProcess(new Process(p)));
+    	fcfs.runFCFS();
         fcfs.displayResults("FCFS");
         
         //SJF
     	Scheduler sjf = new Scheduler();
-        original.forEach(sjf::addProcess);
+    	original.forEach(p -> sjf.addProcess(new Process(p)));
         sjf.runSJF();
         sjf.displayResults("SJF");
         
         //PSJF
         Scheduler psjf = new Scheduler();
-        original.forEach(psjf::addProcess);
+        original.forEach(p -> psjf.addProcess(new Process(p)));
         psjf.runPSJF();
         psjf.displayResults("PSJF");
     	
     	//Round Robin
         Scheduler rr = new Scheduler();
-        original.forEach(rr::addProcess);
+        original.forEach(p -> rr.addProcess(new Process(p)));
         rr.runRoundRobin(2);
         rr.displayResults("Round-Robin q=2");
 
         //Priority (non-preemptive)
         Scheduler pr = new Scheduler();
-        original.forEach(pr::addProcess);
+        original.forEach(p -> pr.addProcess(new Process(p)));
         pr.runPriority(false);
         pr.displayResults("Priority (non-preemptive)");
         

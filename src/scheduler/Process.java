@@ -34,10 +34,29 @@ public class Process {
         
     }
     
+    
+     //Copy‐constructor: makes a fresh clone of a Process
+     
+    public Process(Process other) {
+        this.pid           = other.pid;
+        this.name          = other.name;
+        this.arrivalTime   = other.arrivalTime;
+        this.burstTime     = other.burstTime;
+        this.priority      = other.priority;
+        this.remainingTime = other.remainingTime;
+        this.state         = other.state;
+        this.start         = other.start;
+        this.finish        = other.finish;
+        this.waitingTime   = other.waitingTime;
+    }
+
+    
     public void setWaitingTime(int wt)
     {
     	this.waitingTime=wt;
     }
+    
+  
     
     //getters
     public int getPid() {return pid;}

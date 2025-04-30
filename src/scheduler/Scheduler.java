@@ -213,7 +213,7 @@ public class Scheduler {
 		        p.markRunning(currentTime);
 		        currentTime += p.getBurst();
 		        p.markFinished(currentTime);
-		     
+		        		     
 		 }
 	}
 	public void displayResults(String title)
