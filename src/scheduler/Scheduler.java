@@ -4,7 +4,8 @@ import java.util.*;
 
 public class Scheduler {
 	
-	private List <Process> processList;
+	
+	private final List <Process> processList;
 	
 	public Scheduler() {
 		processList = new ArrayList<>();
@@ -23,10 +24,16 @@ public class Scheduler {
 	public void runFCFS() {
 		//sort proceses by arrival time
 		
-	  Collections.sort(processList, Comparator.comparingInt(Process::getArrival));int currentTime=0;
-	
+	  Collections.sort(processList, Comparator.comparingInt(Process::getArrival));
+	  int currentTime=0;
+	   
 	  for(Process process:processList)
 	  {
+		  if (currentTime< process.getArrival())
+		  {
+			  currentTime=process.getArrival();
+		  }
+		  
 		  process.markReady(); //mark process as ready
 		  
 		  process.markRunning(currentTime);//transition to running state
@@ -43,8 +50,59 @@ public class Scheduler {
 	    
 	}
 	
-	public void displayResults()
+	public void runRoundRobin(int q)
 	{
+		processList.sort(Comparator.comparingInt(Process::getArrival));
+		
+		Queue<Process> ready = new ArrayDeque<>();
+		
+		int currentTime=0;
+		
+		int next=0;
+		
+		while (!ready.isEmpty() || next <processList.size()) {
+			
+		//enqueue all jobs that have arrived by current time
+		while(next<processList.size() && processList.get(next).getArrival()<=currentTime)
+		{
+			Process p= processList.get(next++);
+			p.markReady();
+			ready.add(p);
+		}
+		
+		//if nothing ready go to next arrival
+		if (ready.isEmpty())
+		{
+			currentTime= processList.get(next).getArrival();
+			 continue;
+		}
+		
+		//run one quantum
+		Process p= ready.poll();
+		p.markRunning(currentTime);
+		
+		int slice= Math.min(q, p.getRemaining());
+		p.cpuTick(slice);//burn cpu
+		currentTime+=slice; 
+		
+		if(p.getRemaining()==0)
+		{
+			p.markFinished(currentTime); //process done
+		}
+		
+		else
+		{
+			ready.add(p);//if p not finish at end of time slice send to back of queue
+		}
+		
+	 }
+		
+		
+}
+	
+	public void displayResults(String title)
+	{
+		System.out.println("\n=== "+ title+" ===");
 		for (Process process: processList) {
 			System.out.println(process.toString());
 		}

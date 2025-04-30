@@ -52,6 +52,9 @@ public class Process {
     }
 
     public void cpuTick() {if(remainingTime>0)remainingTime--;}
+    public void cpuTick(int q) {
+    	remainingTime=Math.max(0, remainingTime-q);
+    }
     boolean isDone() {return remainingTime == 0;}
     void markFinished(int clk) {state=State.TERMINATED; finish =clk; remainingTime=0;}
 
