@@ -1,74 +1,67 @@
 package scheduler;
 
+import java.io.*;
+import java.util.*;
+
 public class Main {
 
-    public static void main(String[] args) {
+	public static List<Process> loadProcesses(String filename) throws IOException {
+        List<Process> list = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) continue;        
+                String[] parts = line.split("\\s+");
+                int pid      = Integer.parseInt(parts[0]);
+                int arrival  = Integer.parseInt(parts[1]);
+                int burst    = Integer.parseInt(parts[2]);
+                int priority = Integer.parseInt(parts[3]);
+                list.add(new Process(pid, arrival, burst, priority));
+            }
+        }
+        return list;
+    }
+	
+	
+	
+	
+    public static void main(String[] args)throws IOException {
     	
+    	List<Process> original = loadProcesses("processes.txt");
+    	  
     	Scheduler scheduler=new Scheduler();
     	
-        //Create Processes
-        Process p1 = new Process(1, 0, 5, 1);  // Arrival at time 0, burst time 5
-        Process p2 = new Process(2, 1, 3, 2);  // Arrival at time 1, burst time 3
-        Process p3= new Process(3, 2, 8, 1); 
-        Process p4 = new Process(4, 3, 6, 3);
-        //Process p5 = new Process(5, 10, 6, 2);
+    	//FCFS
+    	Scheduler fcfs = new Scheduler();
+        original.forEach(fcfs::addProcess);
+        fcfs.runFCFS();
+        fcfs.displayResults("FCFS");
         
-      // FCFS scheduling demo
-       Scheduler fcfs = new Scheduler();
+        //SJF
+    	Scheduler sjf = new Scheduler();
+        original.forEach(sjf::addProcess);
+        sjf.runSJF();
+        sjf.displayResults("SJF");
         
-       fcfs.addProcess(p1);
-       fcfs.addProcess(p2);
-       fcfs.addProcess(p3);
-       fcfs.addProcess(p4);
-       //fcfs.addProcess(p5);
+        //PSJF
+        Scheduler psjf = new Scheduler();
+        original.forEach(psjf::addProcess);
+        psjf.runPSJF();
+        psjf.displayResults("PSJF");
+    	
+    	//Round Robin
+        Scheduler rr = new Scheduler();
+        original.forEach(rr::addProcess);
+        rr.runRoundRobin(2);
+        rr.displayResults("Round-Robin q=2");
 
+        //Priority (non-preemptive)
+        Scheduler pr = new Scheduler();
+        original.forEach(pr::addProcess);
+        pr.runPriority(false);
+        pr.displayResults("Priority (non-preemptive)");
+        
+    }	
        
-       //running FCFS 
-       fcfs.runFCFS();
-       
-       //displaying results
-       fcfs.displayResults("FCFS");
-       
-       
-       //RoundRobin Scheduling Demo
-       
-       Scheduler rr= new Scheduler();
-       
-       rr.addProcess(new Process(1, 0, 5, 1));
-       rr.addProcess(new Process(2, 1, 3, 2));
-       rr.addProcess(new Process(3, 2, 8, 1));
-       rr.addProcess(new Process(4, 3, 6, 3));
-       
-       rr.runRoundRobin(2); // time slice=2
-       rr.displayResults("Round-Robin q=2");
-       
-       
-       //SJF Scheduling Demo
-       Scheduler sjf = new Scheduler();
-       sjf.addProcess(new Process(1, 0, 5, 1));
-       sjf.addProcess(new Process(2, 1, 3, 2));
-       sjf.addProcess(new Process(3, 2, 8, 1));
-       sjf.addProcess(new Process(4, 3, 6, 3));
-       sjf.runSJF();                     
-       sjf.displayResults("SJF");   
-       
-       //PSJF Scheduling Demo
-       Scheduler psjf = new Scheduler();
-       psjf.addProcess(new Process(1, 0, 5, 1));
-       psjf.addProcess(new Process(2, 1, 3, 2));
-       psjf.addProcess(new Process(3, 2, 8, 1));
-       psjf.addProcess(new Process(4, 3, 6, 3));
-       psjf.runPSJF();
-       psjf.displayResults("PSJF");
-       
-    // Priority Scheduling Demo (non-preemptive) 
-       Scheduler prio = new Scheduler();
-       prio.addProcess(new Process(1, 0, 5, 1));
-       prio.addProcess(new Process(2, 1, 3, 2));
-       prio.addProcess(new Process(3, 2, 8, 1));
-       prio.addProcess(new Process(4, 3, 6, 3));
-       prio.runPriority(false);
-       prio.displayResults("Priority (non-preemptive)");
-
-    }
 }
