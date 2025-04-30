@@ -167,7 +167,7 @@ public class Scheduler {
 		 int currentTime = 0, next = 0, finished = 0, n = processList.size();
 		 
 		 while (finished < n) {
-			 while (next < n && processList.get(next).getArrival() < currentTime) {
+			 while (next < n && processList.get(next).getArrival() <= currentTime) {
 			      Process p = processList.get(next++);
 			      p.markReady();             
 			      ready.add(p);
@@ -180,6 +180,8 @@ public class Scheduler {
 			    }
 			 
 			 Process p = ready.poll();
+			 p.markRunning(currentTime); 
+			 
 			 p.cpuTick();                
 			 currentTime++;
 			 
