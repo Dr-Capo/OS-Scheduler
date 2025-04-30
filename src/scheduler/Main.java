@@ -50,6 +50,15 @@ public class Main {
        sjf.addProcess(new Process(3, 2, 8, 1));
        sjf.addProcess(new Process(4, 3, 6, 3));
        sjf.runSJF();                     
-       sjf.displayResults("SJF");      
+       sjf.displayResults("SJF");   
+       
+       //PSJF Scheduling Demo
+       Scheduler psjf = new Scheduler();
+       psjf.addProcess(new Process(1, 0, 5, 1));
+       psjf.addProcess(new Process(2, 1, 3, 2));
+       psjf.addProcess(new Process(3, 2, 8, 1));
+       psjf.addProcess(new Process(4, 3, 6, 3));
+       psjf.runPSJF();
+       psjf.displayResults("PSJF");
     }
 }
