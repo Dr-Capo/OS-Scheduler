@@ -165,6 +165,31 @@ public class Scheduler {
 		 
 		 //clock and tracking
 		 int currentTime = 0, next = 0, finished = 0, n = processList.size();
+		 
+		 while (finished < n) {
+			 while (next < n && processList.get(next).getArrival() < currentTime) {
+			      Process p = processList.get(next++);
+			      p.markReady();             
+			      ready.add(p);
+			    }
+			 
+			 if (ready.isEmpty()) {
+			      // jump to next arrival
+			      currentTime = processList.get(next).getArrival();
+			      continue;
+			    }
+			 
+			 Process p = ready.poll();
+			 p.cpuTick();                
+			 currentTime++;
+			 
+			 if (p.getRemaining() == 0) {
+			      p.markFinished(currentTime);
+			      finished++;
+			    } else {
+			      ready.add(p);
+			    }
+		 }
 	}
 	
 	public void displayResults(String title)
