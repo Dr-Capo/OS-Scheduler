@@ -60,5 +60,15 @@ public class Main {
        psjf.addProcess(new Process(4, 3, 6, 3));
        psjf.runPSJF();
        psjf.displayResults("PSJF");
+       
+    // Priority Scheduling Demo (non-preemptive) 
+       Scheduler prio = new Scheduler();
+       prio.addProcess(new Process(1, 0, 5, 1));
+       prio.addProcess(new Process(2, 1, 3, 2));
+       prio.addProcess(new Process(3, 2, 8, 1));
+       prio.addProcess(new Process(4, 3, 6, 3));
+       prio.runPriority(false);
+       prio.displayResults("Priority (non-preemptive)");
+
     }
 }

@@ -194,6 +194,28 @@ public class Scheduler {
 		 }
 	}
 	
+	public void runPriority(boolean preemptive) {
+		 Collections.sort(processList,
+			        Comparator.comparingInt(Process::getPriority)
+			                  .thenComparingInt(Process::getArrival));
+		 int currentTime = 0;
+		 
+		 
+		 for (Process p : processList) {
+		        // jump forward if CPU idle until this arrival
+		        if (currentTime < p.getArrival()) 
+		        {
+		            currentTime = p.getArrival();
+		        }
+		        
+		        // mark ready → running → finished
+		        p.markReady();
+		        p.markRunning(currentTime);
+		        currentTime += p.getBurst();
+		        p.markFinished(currentTime);
+		     
+		 }
+	}
 	public void displayResults(String title)
 	{
 		System.out.println("\n=== "+ title+" ===");
